@@ -394,7 +394,12 @@ function updateGlobalProgressOnLoad() {
 function showCertificate() {
   const modal = document.getElementById('certModal');
   document.getElementById('certName').textContent = state.name || '同學';
-  document.getElementById('certScore').textContent = state.score + ' / 5 分';
+  const pct = Math.round(state.score / 5 * 100);
+  let medal = '🥉 銅獎';
+  if (pct >= 100) medal = '🥇 金獎';
+  else if (pct >= 80) medal = '🥈 銀獎';
+  else if (pct >= 60) medal = '🥉 銅獎';
+  document.getElementById('certScore').innerHTML = state.score + ' / 5 分<br>' + medal + '（' + pct + '%）';
   const d = new Date();
   document.getElementById('certDate').textContent = d.getFullYear() + '年' + (d.getMonth()+1) + '月' + d.getDate() + '日';
   modal.style.display = 'flex';
