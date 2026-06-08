@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>蔡倫造紙的故事 | SEN學習遊戲</title>
+<style>
+:root { --purple: #6a4c93; --gold: #ffd700; --green: #4caf50; --blue: #2196f3; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Microsoft JhengHei', sans-serif; background: #1a1a2e; color: #fff; font-size: 18px; line-height: 1.6; }
+.page { display: none; min-height: 100vh; padding: 20px; }
+.page.active { display: block; }
+.home { background: linear-gradient(135deg, #1a237e, #3949ab); text-align: center; padding-top: 60px; }
+.home-title { font-size: 3em; margin-bottom: 20px; color: #ffd700; }
+.home-subtitle { font-size: 1.5em; margin-bottom: 40px; }
+.input-box { background: #fff; color: #1a1a2e; border-radius: 20px; padding: 30px; max-width: 400px; margin: 0 auto 30px; }
+.input-box input { width: 100%; padding: 15px; font-size: 1.5em; border: 3px solid #6a4c93; border-radius: 12px; margin-bottom: 20px; }
+.btn { background: #ffd700; color: #1a1a2e; border: none; padding: 18px 40px; font-size: 1.5em; border-radius: 20px; cursor: pointer; font-weight: bold; }
+.btn:hover { transform: scale(1.05); }
+.hub { background: linear-gradient(135deg, #1a237e, #3949ab); }
+.hub-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; max-width: 900px; margin: 0 auto; }
+.hub-card { background: rgba(255,255,255,0.15); border: 3px solid rgba(255,255,255,0.3); border-radius: 20px; padding: 30px 20px; cursor: pointer; text-align: center; transition: all 0.3s; }
+.hub-card:hover { background: rgba(255,255,255,0.25); transform: scale(1.05); border-color: #ffd700; }
+.hub-icon { font-size: 3.5em; margin-bottom: 15px; }
+.hub-title { font-size: 1.8em; font-weight: bold; margin-bottom: 10px; }
+.hub-desc { font-size: 1.2em; opacity: 0.9; }
+.hub-status { font-size: 1em; padding: 6px 16px; border-radius: 20px; display: inline-block; margin-top: 15px; }
+.hub-status.done { background: #4caf50; color: #fff; }
+.hub-status.locked { background: rgba(255,255,255,0.2); color: rgba(255,255,255,0.6); }
+.btn-back { background: #fff; color: #1a1a2e; padding: 14px 30px; font-size: 1.3em; border-radius: 16px; margin-top: 30px; }
+.slide-page { background: #1a1a2e; }
+.slide-container { max-width: 900px; margin: 0 auto; text-align: center; }
+.slide-img { width: 100%; max-height: 420px; object-fit: cover; border-radius: 16px; border: 4px solid #ffd700; margin-bottom: 20px; }
+.slide-title { font-size: 2.5em; color: #ffd700; margin-bottom: 15px; }
+.slide-body { font-size: 1.6em; background: #fff; color: #1a1a2e; padding: 30px; border-radius: 20px; margin-bottom: 20px; }
+.slide-nav { position: fixed; bottom: 20px; left: 0; width: 100%; display: flex; justify-content: space-between; padding: 0 30px; z-index: 100; }
+.nav-btn { min-height: 70px; padding: 18px 36px; font-size: 1.4em; border-radius: 20px; border: none; cursor: pointer; background: #ffd700; color: #1a1a2e; }
+.quiz-opt-row { display: flex; align-items: center; gap: 12px; margin-bottom: 15px; }
+.quiz-opt-label { font-size: 1.8em; font-weight: bold; color: #ffd700; width: 50px; text-align: center; }
+.quiz-opt { flex: 1; text-align: left; min-height: 80px; font-size: 1.5em; padding: 20px; border-radius: 16px; border: 3px solid #ffd700; background: #fff; color: #1a1a2e; cursor: pointer; }
+.quiz-tts-btn { background: #6a4c93; color: #fff; border: none; border-radius: 12px; padding: 12px 18px; font-size: 1.3em; cursor: pointer; }
+.correct { background: #4caf50 !important; color: #fff !important; }
+.wrong { background: #f44336 !important; color: #fff !important; }
+.vocab-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; max-width: 900px; margin: 0 auto; }
+.vocab-card { background: #fff; color: #1a1a2e; border-radius: 20px; padding: 20px; text-align: center; cursor: pointer; border: 4px solid #ffd700; }
+.vocab-img { width: 100%; height: 160px; object-fit: cover; border-radius: 12px; margin-bottom: 15px; }
+.vocab-char { font-size: 2.2em; color: #6a4c93; font-weight: bold; }
+#globalProgress { position: fixed; top: 0; left: 0; width: 100%; background: #111; padding: 10px; z-index: 200; display: flex; justify-content: center; gap: 15px; }
+.progress-dot { width: 50px; height: 50px; border-radius: 50%; background: rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center; font-size: 1.5em; border: 3px solid #ffd700; }
+.progress-dot.done { background: #4caf50; }
+.progress-dot.current { background: #ffd700; color: #1a1a2e; }
+</style>
+</head>
+<body>
+<div id="globalProgress">
+  <div class="progress-dot" id="dot-slides">📖</div>
+  <div class="progress-dot" id="dot-idiom">📜</div>
+  <div class="progress-dot" id="dot-vocab">📚</div>
+  <div class="progress-dot" id="dot-quiz">📝</div>
+</div>
+
+<!-- HOME -->
+<div id="home" class="page active home">
+  <h1 class="home-title">📜 蔡倫造紙的故事</h1>
+  <p class="home-subtitle">人文科 • 小學SEN學習遊戲</p>
+  <div class="input-box">
+    <input type="text" id="studentName" placeholder="輸入你的名字">
+    <button class="btn" onclick="startLearning()">開始學習 🚀</button>
+  </div>
+  <p style="margin-top:30px; opacity:0.8;">適合小學生 • 真實風格圖片</p>
+</div>
+
+<!-- HUB -->
+<div id="hub" class="page hub">
+  <div style="max-width:900px;margin:0 auto;text-align:center;">
+    <div id="hubGreeting" style="font-size:2.2em;margin-bottom:30px;">👋 你好，準備好學習未？</div>
+    <div class="hub-grid">
+      <div class="hub-card" onclick="goTo('slides');initSlides();">
+        <div class="hub-icon">📖</div>
+        <div class="hub-title">故事投影片</div>
+        <div class="hub-desc">睇圖學蔡倫造紙</div>
+        <div class="hub-status" id="hubSlides"></div>
+      </div>
+      <div class="hub-card" onclick="goTo('idiomPage');">
+        <div class="hub-icon">📜</div>
+        <div class="hub-title">故事詳解</div>
+        <div class="hub-desc">蔡倫點解發明紙</div>
+        <div class="hub-status" id="hubIdiom"></div>
+      </div>
+      <div class="hub-card" onclick="goTo('wordPage');initWordLearn();">
+        <div class="hub-icon">📚</div>
+        <div class="hub-title">詞語學習</div>
+        <div class="hub-desc">認識6個關鍵詞</div>
+        <div class="hub-status" id="hubVocab"></div>
+      </div>
+      <div class="hub-card" onclick="goTo('quiz');if(state.quiz.length===0)startQuiz();else renderQuiz();">
+        <div class="hub-icon">📝</div>
+        <div class="hub-title">小評估</div>
+        <div class="hub-desc">測試你學識幾多</div>
+        <div class="hub-status" id="hubQuiz"></div>
+      </div>
+    </div>
+    <button class="btn-back" onclick="goTo('home')">🏠 返回首頁</button>
+  </div>
+</div>
+
+<!-- SLIDES -->
+<div id="slides" class="page slide-page">
+  <div class="slide-container">
+    <div id="slideImgContainer"><img id="slideImg" class="slide-img" src="assets/images/slide1.png" alt="蔡倫造紙"></div>
+    <h2 id="slideTitle" class="slide-title"></h2>
+    <div id="slideBody" class="slide-body"></div>
+    <div class="slide-nav">
+      <button class="nav-btn" onclick="prevSlide()">⬅️ 上一頁</button>
+      <button class="nav-btn" onclick="updateHubStatus();goTo('hub')">🏠 返回中心</button>
+      <button class="nav-btn" onclick="nextSlide()">下一頁 ➡️</button>
+    </div>
+  </div>
+</div>
+
+<!-- IDIOM / STORY EXPLAIN -->
+<div id="idiomPage" class="page" style="background:#1a1a2e;padding:40px 20px;">
+  <div style="max-width:800px;margin:0 auto;text-align:center;">
+    <h2 style="font-size:2.8em;color:#ffd700;margin-bottom:30px;">📜 蔡倫造紙的故事</h2>
+    <div style="background:#fff;color:#1a1a2e;border-radius:24px;padding:40px;font-size:1.5em;line-height:1.8;text-align:left;">
+      <p><strong>蔡倫</strong>係東漢時代嘅宦官。</p>
+      <p>當時寫字用竹簡，好重又貴。</p>
+      <p>蔡倫用樹皮、破布、魚網做原料，發明咗平價又輕嘅紙。</p>
+      <p>呢個發明令到知識更容易傳播，改變咗世界！</p>
+    </div>
+    <button class="btn-back" onclick="updateHubStatus();goTo('hub')" style="margin-top:30px;">🏠 返回中心</button>
+  </div>
+</div>
+
+<!-- VOCAB -->
+<div id="wordPage" class="page" style="background:#1a1a2e;padding:30px 20px;">
+  <div style="max-width:900px;margin:0 auto;">
+    <h2 style="text-align:center;font-size:2.5em;color:#ffd700;margin-bottom:30px;">📚 詞語學習</h2>
+    <div id="wordGrid" class="vocab-grid"></div>
+    <button class="btn-back" onclick="updateHubStatus();goTo('hub')" style="margin:30px auto;display:block;">🏠 返回中心</button>
+  </div>
+</div>
+
+<!-- QUIZ -->
+<div id="quiz" class="page" style="background:#1a1a2e;padding:30px 20px;">
+  <div style="max-width:800px;margin:0 auto;text-align:center;">
+    <h2 style="font-size:2.5em;color:#ffd700;margin-bottom:20px;">📝 小評估</h2>
+    <div id="quizProgress" style="margin-bottom:20px;font-size:1.3em;"></div>
+    <div id="quizQuestion" style="background:#fff;color:#1a1a2e;border-radius:20px;padding:30px;font-size:1.8em;margin-bottom:25px;"></div>
+    <div id="quizOptions"></div>
+    <div id="quizHintMsg" style="display:none;margin-top:15px;color:#ffd700;font-size:1.4em;"></div>
+    <button class="btn-back" onclick="updateHubStatus();goTo('hub')" style="margin-top:25px;">🏠 返回中心</button>
+  </div>
+</div>
+
+<!-- DASHBOARD -->
+<div id="dashboard" class="page" style="background:#1a1a2e;text-align:center;padding-top:60px;">
+  <h2 style="font-size:3em;color:#ffd700;">🏆 我的成績</h2>
+  <div id="dashScore" style="font-size:4em;margin:30px 0;color:#fff;"></div>
+  <button class="btn" onclick="resetAndReturn()">重新開始</button>
+</div>
+
+<script>
+let state = {
+  name: '',
+  currentSlide: 0,
+  score: 0,
+  quizIndex: 0,
+  quiz: [],
+  quizAnswered: false,
+  completed: { slides: false, idiom: false, vocab: false, quiz: false }
+};
+
+const introSlides = [
+  { img: 'slide1.png', title: '東漢時代', body: '蔡倫係東漢宦官，當時寫字用竹簡，好重又貴。' },
+  { img: 'slide2.png', title: '蔡倫嘅想法', body: '蔡倫想搵平價材料，代替竹簡。' },
+  { img: 'slide3.png', title: '收集原料', body: '佢收集樹皮、破布、魚網、麻繩。' },
+  { img: 'slide4.png', title: '造紙過程', body: '將原料浸水、搗爛、做成紙漿。' },
+  { img: 'slide5.png', title: '成功發明', body: '蔡倫造出輕便平價嘅紙，改變世界！' }
+];
+
+const words = [
+  { char: '蔡倫', pinyin: 'coi leon', meaning: '東漢宦官，發明紙嘅人', img: 'assets/images/vocab/cailun.png' },
+  { char: '造紙', pinyin: 'zou ji', meaning: '發明紙嘅技術', img: 'assets/images/vocab/paper.png' },
+  { char: '漢朝', pinyin: 'hon ciu', meaning: '中國古代朝代', img: 'assets/images/vocab/han.png' },
+  { char: '樹皮', pinyin: 'syu pei', meaning: '樹嘅皮，用嚟造紙', img: 'assets/images/vocab/bark.png' },
+  { char: '破布', pinyin: 'po bou', meaning: '舊布，造紙原料', img: 'assets/images/vocab/cloth.png' },
+  { char: '紙張', pinyin: 'ji jeung', meaning: '寫字用嘅薄片', img: 'assets/images/vocab/paper2.png' }
+];
+
+const quizQuestions = [
+  { q: '蔡倫係邊個朝代嘅人？', opts: ['唐朝', '東漢', '宋朝', '明朝'], ans: 1 },
+  { q: '蔡倫用咩材料造紙？', opts: ['竹簡', '樹皮同破布', '石頭', '布'], ans: 1 },
+  { q: '造紙之前寫字用咩？', opts: ['紙', '竹簡', '電腦', '石板'], ans: 1 },
+  { q: '蔡倫造紙有咩好處？', opts: ['好貴', '好輕好平', '好重', '好難寫'], ans: 1 },
+  { q: '蔡倫係做乜嘅人？', opts: ['農夫', '宦官', '士兵', '醫生'], ans: 1 }
+];
+
+function speak(text) {
+  if ('speechSynthesis' in window) {
+    speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = 'zh-HK';
+    u.rate = 0.85;
+    speechSynthesis.speak(u);
+  }
+}
+
+function goTo(page) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById(page).classList.add('active');
+}
+
+function startLearning() {
+  state.name = document.getElementById('studentName').value.trim() || '同學';
+  document.getElementById('hubGreeting').textContent = '👋 ' + state.name + '，準備好學習未？';
+  updateHubStatus();
+  goTo('hub');
+}
+
+function initSlides() {
+  state.currentSlide = 0;
+  renderSlide();
+  state.completed.slides = false;
+}
+
+function renderSlide() {
+  const s = introSlides[state.currentSlide];
+  document.getElementById('slideImg').src = 'assets/images/' + s.img;
+  document.getElementById('slideTitle').textContent = s.title;
+  document.getElementById('slideBody').innerHTML = s.body;
+  if (state.autoTTS !== false) speak(s.body);
+}
+
+function nextSlide() {
+  if (state.currentSlide < introSlides.length - 1) {
+    state.currentSlide++;
+    renderSlide();
+  } else {
+    state.completed.slides = true;
+    updateHubStatus();
+    showCelebration('slides');
+    setTimeout(() => goTo('hub'), 1800);
+  }
+}
+
+function prevSlide() {
+  if (state.currentSlide > 0) {
+    state.currentSlide--;
+    renderSlide();
+  }
+}
+
+function initWordLearn() {
+  const grid = document.getElementById('wordGrid');
+  grid.innerHTML = words.map(w => `
+    <div class="vocab-card" onclick="speak('${w.char}'); this.classList.add('vocab-pop'); setTimeout(() => this.classList.remove('vocab-pop'), 300);">
+      <img src="${w.img}" class="vocab-img" alt="${w.char}">
+      <div class="vocab-char">${w.char}</div>
+      <div style="color:#888;font-size:1.1em;">${w.pinyin}</div>
+      <div style="color:#4caf50;margin-top:8px;">${w.meaning}</div>
+    </div>
+  `).join('');
+  state.completed.vocab = true;
+  updateHubStatus();
+}
+
+function startQuiz() {
+  state.quiz = [...quizQuestions];
+  state.quizIndex = 0;
+  state.score = 0;
+  state.quizAnswered = false;
+  state.completed.quiz = false;
+  renderQuiz();
+  goTo('quiz');
+  setTimeout(() => speak(state.quiz[0].q), 600);
+}
+
+function renderQuiz() {
+  const q = state.quiz[state.quizIndex];
+  document.getElementById('quizProgress').textContent = `第 ${state.quizIndex + 1} / ${state.quiz.length} 題`;
+  document.getElementById('quizQuestion').innerHTML = q.q + ' <button onclick="speak(\'' + q.q + '\');return false;" style="background:#6a4c93;color:#fff;border:none;border-radius:8px;padding:8px 14px;font-size:1.1em;">🔊</button>';
+  document.getElementById('quizOptions').innerHTML = q.opts.map((opt, i) => `
+    <div class="quiz-opt-row">
+      <div class="quiz-opt-label">${['A','B','C','D'][i]}</div>
+      <button class="quiz-opt" onclick="answerQuiz(${i})">${opt}</button>
+      <button class="quiz-tts-btn" onclick="speak('${opt}'); return false;">🔊</button>
+    </div>
+  `).join('');
+  state.quizAnswered = false;
+}
+
+function answerQuiz(idx) {
+  if (state.quizAnswered) return;
+  state.quizAnswered = true;
+  const q = state.quiz[state.quizIndex];
+  const rows = document.querySelectorAll('.quiz-opt-row');
+  if (idx === q.ans) {
+    rows[idx].querySelector('.quiz-opt').classList.add('correct');
+    state.score++;
+    speak('做得好！');
+    setTimeout(() => {
+      state.quizIndex++;
+      if (state.quizIndex >= state.quiz.length) {
+        state.completed.quiz = true;
+        updateHubStatus();
+        showCelebration('quiz');
+        setTimeout(() => {
+          document.getElementById('dashScore').textContent = state.score + ' / ' + state.quiz.length + ' 分';
+          goTo('dashboard');
+        }, 1600);
+      } else {
+        renderQuiz();
+        speak(state.quiz[state.quizIndex].q);
+      }
+    }, 1200);
+  } else {
+    rows[idx].querySelector('.quiz-opt').classList.add('wrong');
+    speak('再試一次');
+    setTimeout(() => {
+      rows[idx].querySelector('.quiz-opt').classList.remove('wrong');
+      state.quizAnswered = false;
+    }, 900);
+  }
+}
+
+function updateHubStatus() {
+  const done = '<span class="hub-status done">✅ 完成</span>';
+  const locked = '<span class="hub-status locked">🔓 可選</span>';
+  document.getElementById('hubSlides').innerHTML = state.completed.slides ? done : locked;
+  document.getElementById('hubIdiom').innerHTML = state.completed.idiom ? done : locked;
+  document.getElementById('hubVocab').innerHTML = state.completed.vocab ? done : locked;
+  document.getElementById('hubQuiz').innerHTML = state.completed.quiz ? done : locked;
+  updateGlobalProgress();
+}
+
+function updateGlobalProgress() {
+  const items = ['slides','idiom','vocab','quiz'];
+  items.forEach((id, i) => {
+    const el = document.getElementById('dot-' + id);
+    if (!el) return;
+    el.classList.remove('done','current');
+    if (state.completed[id]) el.classList.add('done');
+    else if (i === items.findIndex(k => !state.completed[k])) el.classList.add('current');
+  });
+}
+
+function showCelebration(activity) {
+  const names = { slides: '故事投影片', idiom: '故事詳解', vocab: '詞語學習', quiz: '小評估' };
+  speak(names[activity] + ' 完成左喇！你做得真好！');
+  // simple confetti
+  for (let i = 0; i < 15; i++) {
+    const c = document.createElement('div');
+    c.style.cssText = `position:fixed;top:-10px;left:${Math.random()*100}vw;width:12px;height:12px;background:#ffd700;border-radius:50%;animation:confettiFall 2.5s linear forwards;z-index:9999`;
+    document.body.appendChild(c);
+    setTimeout(() => c.remove(), 2800);
+  }
+}
+
+function resetAndReturn() {
+  state = { name: '', currentSlide: 0, score: 0, quizIndex: 0, quiz: [], quizAnswered: false, completed: { slides: false, idiom: false, vocab: false, quiz: false } };
+  goTo('home');
+}
+
+function updateGlobalProgressOnLoad() {
+  // called after hub
+}
+
+window.onload = function() {
+  // preload voices
+  if ('speechSynthesis' in window) {
+    speechSynthesis.onvoiceschanged = () => speechSynthesis.getVoices();
+  }
+  // initial progress dots
+  setTimeout(updateGlobalProgress, 300);
+};
+</script>
+</body>
+</html>
