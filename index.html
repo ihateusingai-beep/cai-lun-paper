@@ -157,8 +157,32 @@ body { font-family: 'Microsoft JhengHei', sans-serif; background: #1a1a2e; color
 <div id="dashboard" class="page" style="background:#1a1a2e;text-align:center;padding-top:60px;">
   <h2 style="font-size:3em;color:#ffd700;">🏆 我的成績</h2>
   <div id="dashScore" style="font-size:4em;margin:30px 0;color:#fff;"></div>
+  <button class="btn" onclick="showCertificate()" style="margin:10px;">📜 打印靚靚證書</button>
+  <br>
   <button class="btn" onclick="resetAndReturn()">重新開始</button>
 </div>
+  <button class="btn" onclick="showCertificate()" style="margin:10px;">📜 打印靚靚證書</button>
+  <br>
+  <button class="btn" onclick="resetAndReturn()">重新開始</button>
+</div>
+
+<!-- CERTIFICATE -->
+<div id="certModal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.85);z-index:3000;align-items:center;justify-content:center;">
+  <div id="certificate" style="background:linear-gradient(#fffef0,#f5e8c7);color:#1a1a2e;width:90%;max-width:820px;border:12px solid #c5a26f;border-radius:20px;padding:50px 40px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,0.6);position:relative;">
+    <div style="position:absolute;top:25px;right:35px;font-size:2.2em;color:#c5a26f;">📜</div>
+    <div style="font-size:1.4em;letter-spacing:4px;color:#8b6f3e;margin-bottom:10px;">東漢 • 人文科</div>
+    <h2 style="font-size:3.2em;color:#6a4c93;margin:10px 0 25px;">蔡倫造紙的故事</h2>
+    <div style="font-size:1.6em;margin:15px 0;">恭喜</div>
+    <div id="certName" style="font-size:3.5em;font-weight:bold;color:#c5a26f;margin:10px 0 25px;"></div>
+    <div style="font-size:1.5em;margin-bottom:20px;">已成功完成全部學習活動</div>
+    <div style="font-size:2.8em;color:#4caf50;margin:15px 0;" id="certScore"></div>
+    <div style="margin-top:30px;font-size:1.3em;color:#8b6f3e;">日期：<span id="certDate"></span></div>
+    <div style="margin-top:40px;font-size:1.1em;color:#8b6f3e;">蔡倫 • 造紙術發明家</div>
+    <button onclick="printCertificate()" style="margin-top:35px;background:#c5a26f;color:#fff;border:none;padding:14px 42px;font-size:1.4em;border-radius:16px;cursor:pointer;">🖨️ 打印證書</button>
+    <button onclick="hideCertificate()" style="margin-left:15px;background:#888;color:#fff;border:none;padding:14px 30px;font-size:1.4em;border-radius:16px;cursor:pointer;">關閉</button>
+  </div>
+</div>
+
 
 <script>
 let state = {
@@ -364,6 +388,30 @@ function resetAndReturn() {
 
 function updateGlobalProgressOnLoad() {
   // called after hub
+}
+
+
+function showCertificate() {
+  const modal = document.getElementById('certModal');
+  document.getElementById('certName').textContent = state.name || '同學';
+  document.getElementById('certScore').textContent = state.score + ' / 5 分';
+  const d = new Date();
+  document.getElementById('certDate').textContent = d.getFullYear() + '年' + (d.getMonth()+1) + '月' + d.getDate() + '日';
+  modal.style.display = 'flex';
+  speak('恭喜你完成蔡倫造紙的故事！');
+}
+
+function hideCertificate() {
+  document.getElementById('certModal').style.display = 'none';
+}
+
+function printCertificate() {
+  const cert = document.getElementById('certificate');
+  const original = cert.style.boxShadow;
+  cert.style.boxShadow = 'none';
+  window.print();
+  cert.style.boxShadow = original;
+  setTimeout(hideCertificate, 800);
 }
 
 window.onload = function() {
