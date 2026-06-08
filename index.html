@@ -147,6 +147,7 @@ body { font-family: 'Microsoft JhengHei', sans-serif; background: #1a1a2e; color
   <div style="max-width:800px;margin:0 auto;text-align:center;">
     <h2 style="font-size:2.5em;color:#ffd700;margin-bottom:20px;">📝 小評估</h2>
     <div id="quizProgress" style="margin-bottom:20px;font-size:1.3em;"></div>
+    <img id="quizImg" style="max-width:280px;border-radius:16px;margin:0 auto 20px;display:block;box-shadow:0 4px 12px rgba(0,0,0,0.3);" alt="題目圖片">
     <div id="quizQuestion" style="background:#fff;color:#1a1a2e;border-radius:20px;padding:30px;font-size:1.8em;margin-bottom:25px;"></div>
     <div id="quizOptions"></div>
     <div id="quizHintMsg" style="display:none;margin-top:15px;color:#ffd700;font-size:1.4em;"></div>
@@ -214,12 +215,12 @@ const words = [
 ];
 
 const quizQuestions = [
-  { q: '蔡倫係邊個朝代嘅人？', opts: ['唐朝', '東漢', '宋朝', '明朝'], ans: 1 },
-  { q: '蔡倫用咩材料造紙？', opts: ['竹簡', '樹皮同破布', '石頭', '布'], ans: 1 },
-  { q: '造紙之前寫字用咩？', opts: ['紙', '竹簡', '電腦', '石板'], ans: 1 },
-  { q: '蔡倫造紙有咩好處？', opts: ['好貴', '好輕好平', '好重', '好難寫'], ans: 1 },
-  { q: '日常點樣維護文化安全？', opts: ['唔理傳統', '學習漢字同傳承故事', '只用外國嘢', '唔讀書'], ans: 1 },
-  { q: '造紙術點樣幫助文化安全？', opts: ['令知識更容易消失', '保存同傳播中國文化', '令竹簡更貴', '冇幫助'], ans: 1 }
+  { q: '蔡倫係邊個朝代嘅人？', opts: ['唐朝', '東漢', '宋朝', '明朝'], ans: 1, img: 'assets/images/vocab/han.png' },
+  { q: '蔡倫用咩材料造紙？', opts: ['竹簡', '樹皮同破布', '石頭', '布'], ans: 1, img: 'assets/images/vocab/bark.png' },
+  { q: '造紙之前寫字用咩？', opts: ['紙', '竹簡', '電腦', '石板'], ans: 1, img: 'assets/images/vocab/cloth.png' },
+  { q: '蔡倫造紙有咩好處？', opts: ['好貴', '好輕好平', '好重', '好難寫'], ans: 1, img: 'assets/images/vocab/paper2.png' },
+  { q: '日常點樣維護文化安全？', opts: ['唔理傳統', '學習漢字同傳承故事', '只用外國嘢', '唔讀書'], ans: 1, img: 'assets/images/vocab/cailun.png' },
+  { q: '造紙術點樣幫助文化安全？', opts: ['令知識更容易消失', '保存同傳播中國文化', '令竹簡更貴', '冇幫助'], ans: 1, img: 'assets/images/vocab/paper.png' }
 ];
 
 function speak(text) {
@@ -305,6 +306,13 @@ function startQuiz() {
 function renderQuiz() {
   const q = state.quiz[state.quizIndex];
   document.getElementById('quizProgress').textContent = `第 ${state.quizIndex + 1} / ${state.quiz.length} 題`;
+  const quizImg = document.getElementById('quizImg');
+  if (q.img) {
+    quizImg.src = q.img;
+    quizImg.style.display = 'block';
+  } else {
+    quizImg.style.display = 'none';
+  }
   document.getElementById('quizQuestion').innerHTML = q.q + ' <button onclick="speak(\'' + q.q + '\');return false;" style="background:#6a4c93;color:#fff;border:none;border-radius:8px;padding:8px 14px;font-size:1.1em;">🔊</button>';
   document.getElementById('quizOptions').innerHTML = q.opts.map((opt, i) => `
     <div class="quiz-opt-row">
